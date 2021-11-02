@@ -45,6 +45,20 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerance: "touch",
+  drop: function(event, ui) {
+    ui.draggable.remove();
+  },
+  over: function(event, ui) {
+  
+  },
+  out: function(event, ui) {
+  
+  }
+})
+
 $(".list-group").on("click", "p", function() {
   var text = $(this)
   .text()
@@ -173,6 +187,51 @@ $("#remove-tasks").on("click", function() {
     $("#list-" + key).empty();
   }
   saveTasks();
+});
+
+$(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(event) {
+   
+  },
+  deactivate: function(event) {
+    
+  },
+  over: function(event) {
+    
+  },
+  out: function(event) {
+    
+  },
+  update: function(event) {
+    var tempArr = [];
+    
+    //for each child, find description and date and push it into array above
+    $(this).children().each(function(){
+      var text = $(this)
+      .find("p")
+      .text()
+      .trim();
+      var date = $(this)
+      .find("span")
+      .text()
+      .trim();
+
+      tempArr.push({
+        text: text,
+        date: date
+      });
+    });
+    //trim down list's ID to match object's property
+    var arrName =$(this)
+    .attr("id")
+    .replace("list-", "");
+    tasks[arrName] = tempArr;
+    saveTasks();
+  }
 });
 
 // load tasks for the first time
